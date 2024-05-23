@@ -8,7 +8,7 @@ import java.util.List;
 
 import br.com.desafio.siemens.model.classes.Cidade;
 
-public class RepositorioCidade implements Repositorio<Cidade, String>{
+public class RepositorioCidade implements Repositorio<Cidade, Integer>{
 
 	// O modificador do construtor é default para impedir que o objeto seja criado fora do pacote
 	RepositorioCidade() {}
@@ -17,7 +17,7 @@ public class RepositorioCidade implements Repositorio<Cidade, String>{
 	public void inserir(Cidade cidade) throws SQLException {
 		// TODO Auto-generated method stub
 
-		String sql = "insert into cidade (nome, estado) values (?,?)";
+		String sql = "insert into tb_cidade (nome, estado) values (?,?)";
 
 		PreparedStatement pstm = ConnectionManager.getCurrentConnection().prepareStatement(sql);
 
@@ -31,106 +31,138 @@ public class RepositorioCidade implements Repositorio<Cidade, String>{
 	public void alterar(Cidade cidade) throws SQLException {
 		// TODO Auto-generated method stub
 
-		String sql = "update cidade set tipo=?, descricao=?, preconormal=?, precocompleta=? where nome=?";
+		String sql = "update tb_cidade set nome=?, estado=? where id_cidade=?";
 
 		PreparedStatement pstm = ConnectionManager.getCurrentConnection().prepareStatement(sql);
 
 		pstm.setString(1, cidade.getNome());
 		pstm.setString(2, cidade.getEstado());
 		
-		pstm.setString(5, cidade.getNome());
+		pstm.setInt(3, cidade.getIdCidade());
 
 		pstm.execute();
 	}
 
 
-	// Ler pelo nome da cidade
-	public Cidade lerPorCidade(String nomeCidade) throws SQLException {
+	@Override
+	public Cidade lerId(Integer idCidade) throws SQLException {
 		// TODO Auto-generated method stub
 
-		String sql = "select * from cidade where nome = ?";
+		String sql = "select * from tb_cidade where id_cidade=?";
+
+		PreparedStatement pstm = ConnectionManager.getCurrentConnection().prepareStatement(sql);
+
+		pstm.setInt(1, idCidade);
+
+		ResultSet result = pstm.executeQuery();
+
+		Cidade cidade = null;
+
+		if (result.next()) {
+
+			cidade = new Cidade();
+			
+			cidade.setIdCidade(result.getInt("id_cidade"));
+			cidade.setNome(result.getString("nome"));
+			cidade.setEstado(result.getString("estado"));			
+		}
+
+		return cidade;
+	}
+	
+	
+	public List<Cidade> lerNome(String nomeCidade) throws SQLException {
+		// TODO Auto-generated method stub
+
+		String sql = "select * from tb_cidade where nome=?";
 
 		PreparedStatement pstm = ConnectionManager.getCurrentConnection().prepareStatement(sql);
 
 		pstm.setString(1, nomeCidade);
-
+		
 		ResultSet result = pstm.executeQuery();
 
-		Cidade tCidade = null;
+		List<Cidade> cidades = new ArrayList<Cidade>();
 
-		if (result.next()) {
+		while (result.next()) {
 
-			tCidade = new Cidade();
+			Cidade cidade = new Cidade();
 			
-			tCidade.setNome(nomeCidade);
-			tCidade.setEstado(result.getString("estado"));			
+			cidade.setIdCidade(result.getInt("id_cidade"));
+			cidade.setNome(result.getString("nome"));
+			cidade.setEstado(result.getString("estado"));			
+
+			cidades.add(cidade);
 		}
 
-		return tCidade;
+		return cidades;
 	}
 	
-	// Ler pelo estado
-	public Cidade lerPorEstado(String nomeEstado) throws SQLException {
+	public List<Cidade> lerEstado(String estado) throws SQLException {
 		// TODO Auto-generated method stub
 
-		String sql = "select * from cidade where estado = ?";
+		String sql = "select * from tb_cidade where estado=?";
 
 		PreparedStatement pstm = ConnectionManager.getCurrentConnection().prepareStatement(sql);
 
-		pstm.setString(1, nomeEstado);
-
+		pstm.setString(1, estado);
+		
 		ResultSet result = pstm.executeQuery();
 
-		Cidade tCidade = null;
+		List<Cidade> cidades = new ArrayList<Cidade>();
 
-		if (result.next()) {
+		while (result.next()) {
 
-			tCidade = new Cidade();
+			Cidade cidade = new Cidade();
 			
-			tCidade.setNome(result.getString("nome"));
-			tCidade.setEstado(nomeEstado);						
+			cidade.setIdCidade(result.getInt("id_cidade"));
+			cidade.setNome(result.getString("nome"));
+			cidade.setEstado(result.getString("estado"));			
+
+			cidades.add(cidade);
 		}
 
-		return tCidade;
+		return cidades;
 	}
 
 	@Override
-	public void deletar(String nomeCidade) throws SQLException {
+	public void deletar(Integer idCidade) throws SQLException {
 		// TODO Auto-generated method stub
 
-		String sql = "delete from cidade where cidade = ?";
+		String sql = "delete from tb_cidade where id_cidade=?";
 
 		PreparedStatement pstm = ConnectionManager.getCurrentConnection().prepareStatement(sql);
 
-		pstm.setString(1, nomeCidade);
+		pstm.setInt(1, idCidade);
 
 		pstm.execute();
-
 	}
+
 
 	@Override
 	public List<Cidade> lerTudo() throws SQLException {
 		// TODO Auto-generated method stub
 
-		String sql = "select * from tipocarro";
+		String sql = "select * from tb_cidade";
 
 		PreparedStatement pstm = ConnectionManager.getCurrentConnection().prepareStatement(sql);
 
 		ResultSet result = pstm.executeQuery();
 
-		List<Cidade> tipos = new ArrayList<Cidade>();
+		List<Cidade> cidades = new ArrayList<Cidade>();
 
 		while (result.next()) {
 
-			Cidade tCidade = new Cidade();
+			Cidade cidade = new Cidade();
 			
-			tCidade.setNome(result.getString("nome"));
-			tCidade.setEstado(result.getString("estado"));			
+			cidade.setIdCidade(result.getInt("id_cidade"));
+			cidade.setNome(result.getString("nome"));
+			cidade.setEstado(result.getString("estado"));			
 
-			tipos.add(tCidade);
+			cidades.add(cidade);
 		}
 
-		return tipos;
+		return cidades;
 	}
 	
 }

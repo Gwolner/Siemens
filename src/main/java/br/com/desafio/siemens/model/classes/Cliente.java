@@ -2,12 +2,21 @@ package br.com.desafio.siemens.model.classes;
 
 public class Cliente {
 	
+	private int idCliente;
 	private String nomeCompleto;
 	private String sexo;
 	private String dataNascimento;
 	private int idade;
-	private String cidade;
+	private Cidade cidade;
 	
+	public int getIdCliente() {
+		return idCliente;
+	}
+
+	public void setIdCliente(int idCliente) {
+		this.idCliente = idCliente;
+	}
+
 	public String getNomeCompleto() {
 		return nomeCompleto;
 	}
@@ -39,13 +48,15 @@ public class Cliente {
 	public void setIdade(int idade) {
 		this.idade = idade;
 	}
-	
-	public String getCidade() {
+
+	public Cidade getCidade() {
 		return cidade;
 	}
-	
-	public void setCidade(String cidade) {
+
+	public void setCidade(Cidade cidade) {
 		this.cidade = cidade;
 	}
+	
+	
 	
 }
